@@ -37,3 +37,25 @@ except Exception as e:
 print(f"[ERREUR LECTURE]: {e}")
 finally:
 conn.close()
+
+def valider_produit(nom, prix, stock):
+""" Vérifie les règles métier avant toute connexion SGBD. """
+# Règle 1: Nettoyage et existence
+if not nom or len(str(nom).strip()) < 2:
+return False, "Le nom doit contenir au moins 2 caractères visibles."
+# Règle 2: Type et valeur positive
+try:
+prix_float = float(prix)
+if prix_float < 0:
+return False, "Le prix ne peut pas être négatif."
+except ValueError:
+return False, "Le prix doit être une valeur numérique."
+return True, None
+def ajouter_produit_securise(nom, prix, stock):
+# 1. Validation Applicative (Business Layer)
+est_valide, message_erreur = valider_produit(nom, prix, stock)
+if not est_valide:
+print(f"[ANNULATION] {message_erreur}")
+return # On arrête tout ici, le SGBD n'est pas contacté.
+# 2. Si valide, appel de la couche de données
+ajouter_produit(nom, prix, stock
