@@ -58,4 +58,4 @@ if not est_valide:
 print(f"[ANNULATION] {message_erreur}")
 return # On arrête tout ici, le SGBD n'est pas contacté.
 # 2. Si valide, appel de la couche de données
-ajouter_produit(nom, prix, stock
+ajouter_produit(nom, prix, stock) 
