@@ -19,7 +19,7 @@ def demarrer_application():
         print("3. Vendre un produit (Transaction)")
         print("Q. Quitter")
         
-        choix = input("Votre choix > ").upper()
+        choix = input("Votre choix : > ").upper()
         
         if choix == "1":
             manager.afficher_catalogue()
