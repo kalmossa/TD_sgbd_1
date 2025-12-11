@@ -2,6 +2,10 @@ import psycopg2
 from psycopg2 import OperationalError
 import logging
 import os
+from dotenv import load_dotenv # nouvel import
+
+# charge le fichier .env en mémoire
+load_dotenv()
 
 # Création du dossier de logs
 if not os.path.exists('logs'):
@@ -19,10 +23,13 @@ def log_critical_error(context, exception):
 
 def get_connection():
     """
-    Établit une session avec le serveur PostgreSQL.
-    Retourne: Objet de connexion psycopg2 ou None.
+    établit une session avec le serveur postgresql via variable d'environnement.
     """
-    dsn = "host=localhost dbname=boutique_db user=boutique_user password=secure_pass_123"
+    # on récupère l'url sécurisée au lieu du dsn hardcodé
+    dsn = os.getenv("DATABASE_URL")
+    if not dsn:
+        log_critical_error("config", "variable DATABASE_URL manquante dans le .env")
+        return None
 
     try:
         conn = psycopg2.connect(dsn)
