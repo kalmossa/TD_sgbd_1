@@ -2,15 +2,13 @@ import psycopg2
 from psycopg2 import OperationalError
 import logging
 import os
-from dotenv import load_dotenv # nouvel import
-
-# charge le fichier .env en mémoire
-load_dotenv()
 
 # Création du dossier de logs
 if not os.path.exists('logs'):
     os.makedirs('logs')
 
+# Tout ce qui est ERROR ou pire ira dans le fichier.
+# Le mode 'a' (append) ajoute à la suite sans écraser l'historique.
 logging.basicConfig(
     filename='logs/db_errors.log',
     level=logging.ERROR,
@@ -23,19 +21,29 @@ def log_critical_error(context, exception):
 
 def get_connection():
     """
-    établit une session avec le serveur postgresql via variable d'environnement.
+    Établit une session avec le serveur PostgreSQL.
+    Retourne: Objet de connexion psycopg2 ou None en cas d'échec.
     """
-    # on récupère l'url sécurisée au lieu du dsn hardcodé
-    dsn = os.getenv("DATABASE_URL")
-    if not dsn:
-        log_critical_error("config", "variable DATABASE_URL manquante dans le .env")
-    return None
-
+    # DSN (Data Source Name): L'adresse complète de destination
+    # MISE À JOUR : Utilisation de 'boutique_user' créé en Partie 0
+    dsn = "host=localhost dbname=boutique_db user=boutique_user password=secure_pass_123"
     try:
+        # TENTATIVE DE CONNEXION :
+        # 1. Envoi d'un paquet SYN au serveur.
+        # 2. Handshake et Authentification.
+        # 3. Allocation de mémoire (fork d'un processus dédié sur le serveur).
         conn = psycopg2.connect(dsn)
         print("[INFO] Connexion au SGBD réussie.")
         return conn
     except OperationalError as e:
+        # Capture les erreurs réseaux (câble débranché, serveur éteint) ou d'auth.
         log_critical_error("Connexion SGBD", e)
-        print("[ERREUR] Service indisponible.")
+        print(f"[ERREUR CRITIQUE] Échec de connexion au SGBD: {e}")
         return None
+
+# Test unitaire rapide
+if __name__ == "__main__":
+    test_conn = get_connection()
+    if test_conn:
+        test_conn.close() # Règle d'or: Toujours fermer ce qu'on a ouvert (libération RAM serveur)
+        print("[INFO] Connexion fermée proprement.")

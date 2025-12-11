@@ -27,9 +27,7 @@ def demarrer_application():
 
         choix = input("Votre choix > ").upper()
 
-        # -----------------------------------------------------------------
         # 1. Lister les produits
-        # -----------------------------------------------------------------
         if choix == "1":
             # appel au service au lieu de la dal
             produits = service.obtenir_catalogue()
@@ -41,9 +39,7 @@ def demarrer_application():
                 for p in produits:
                     print(f"[{p['id']}] {p['nom']} - {p['prix']}€ (Stock: {p['stock']})")
 
-        # -----------------------------------------------------------------
         # 2. Ajouter un produit
-        # -----------------------------------------------------------------
         elif choix == "2":
             print("\n--- NOUVEAU PRODUIT ---")
             nom = input("Nom: ")
@@ -67,9 +63,7 @@ def demarrer_application():
                 # ex: "le prix doit être positif"
                 print(f"⛔ Erreur de validation : {e}")
 
-        # -----------------------------------------------------------------
         # 3. Vendre un produit
-        # -----------------------------------------------------------------
         elif choix == "3":
             print("\n--- CAISSE ENREGISTREUSE ---")
             id_prod = lire_entier_securise("ID du produit: ")
@@ -88,10 +82,7 @@ def demarrer_application():
             except RuntimeError as re:
                 # erreur remontée par la bll (ex: stock insuffisant)
                 print(f"⚠️ {re}")
-
-        # -----------------------------------------------------------------
         # Quitter
-        # -----------------------------------------------------------------
         elif choix == "Q":
             print("Fermeture...")
             sys.exit()
