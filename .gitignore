@@ -2,5 +2,5 @@ venv/
 __pycache__/
 *.log
 .DS_Store
-DATABASE_URL="postgres://user:pass@host:5432/Cloud_DB?sslmode=require"
-.env 
+.env
+logs/

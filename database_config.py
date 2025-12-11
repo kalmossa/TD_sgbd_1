@@ -29,7 +29,7 @@ def get_connection():
     dsn = os.getenv("DATABASE_URL")
     if not dsn:
         log_critical_error("config", "variable DATABASE_URL manquante dans le .env")
-        return None
+    return None
 
     try:
         conn = psycopg2.connect(dsn)
